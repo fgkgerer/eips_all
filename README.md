@@ -12,6 +12,7 @@
 | ---------- | -------------------------------------------------- | -------- | -------- | ------------------------ | -------- |
 | ERC-20     | Token Standard                                     | Final    | ERC      | DEX, 借贷                | [ERC-20.md](ERC-20.md) |
 | ERC-165    | Standard Interface Detection                       | Final    | ERC      | NFT                      | [ERC-165.md](ERC-165.md) |
+| EIP-191    | Signed Data Standard                               | Final    | ERC      | DEX, 借贷, NFT, 钱包     | [EIP-191.md](EIP-191.md) |
 | EIP-712    | Typed Structured Data Hashing and Signing          | Final    | Interface| DEX, 借贷, NFT, 钱包     | [EIP-712.md](EIP-712.md) |
 | ERC-721    | Non-Fungible Token Standard                        | Final    | ERC      | DEX, NFT                 | [ERC-721.md](ERC-721.md) |
 | ERC-1155   | Multi Token Standard                               | Final    | ERC      | NFT                      | [ERC-1155.md](ERC-1155.md) |
@@ -59,7 +60,7 @@
           │                                     │
           ▼                                     ▼
    ┌──────────────────────────────────────────────────┐
-   │                  EIP-712                         │ ← 所有链下签名的基石
+   │                  EIP-712                         │ ← 类型化数据签名
    │              (类型化数据签名)                      │
    └──────────┬───────────────────────────────────────┘
               │
@@ -73,6 +74,13 @@
 
   ERC-8004 ─── 配合 ─── X402 ─── 配合 ─── ERC-8183
   (信任层)            (支付层)            (结算层)
+
+  ─────────────────────────────────────────────────────
+  EIP-712（0x01）· personal_sign（0x45）· 所有链下签名
+               都基于 ↓
+        ┌─────────────────────────┐
+        │   EIP-191 签名数据标准   │ ← 所有链下签名的真正基石
+        └─────────────────────────┘
 ```
 
 ---
@@ -86,6 +94,7 @@
 
 ### 🟢 交互层（Interaction Layer）— 如何安全操作
 - **ERC-165** — 接口检测（调用前确认合约支持什么功能）
+- **EIP-191** — 签名数据前缀（统一 `0x19` 前缀，防签名重放为交易）
 - **EIP-712** — 类型化签名（让人看懂签名内容，防钓鱼）
 - **ERC-1271** — 合约签名验证（Gnosis Safe 多签也能签名挂单）
 - **ERC-2612** — 无 Gas 授权（签名替代 approve 交易）
@@ -109,17 +118,17 @@
 
 ### 路线 A：DApp 开发者（DeFi / NFT）
 ```
-ERC-20 → EIP-712 → ERC-2612 → ERC-721 → ERC-1155 → ERC-4626
+ERC-20 → EIP-191 → EIP-712 → ERC-2612 → ERC-721 → ERC-1155 → ERC-4626
 ```
 
 ### 路线 B：基础设施开发者（钱包 / 工具）
 ```
-ERC-20 → ERC-165 → EIP-712 → ERC-1271 → ERC-4337 → EIP-7702
+ERC-20 → ERC-165 → EIP-191 → EIP-712 → ERC-1271 → ERC-4337 → EIP-7702
 ```
 
 ### 路线 C：AI + Web3 开发者
 ```
-ERC-20 → ERC-721 → EIP-712 → ERC-8004 → X402 → ERC-8183
+ERC-20 → ERC-721 → EIP-191 → EIP-712 → ERC-8004 → X402 → ERC-8183
 ```
 
 ---
@@ -130,9 +139,10 @@ ERC-20 → ERC-721 → EIP-712 → ERC-8004 → X402 → ERC-8183
 ERC(EIP)标准/
 ├── README.md              ← 你在这里
 │
-├── 独立标准文档 (14 个)
+├── 独立标准文档 (15 个)
 ├── ERC-20.md              # Token Standard
 ├── ERC-165.md             # Standard Interface Detection
+├── EIP-191.md             # Signed Data Standard
 ├── EIP-712.md             # Typed Structured Data Signing
 ├── ERC-721.md             # Non-Fungible Token
 ├── ERC-1155.md            # Multi Token Standard
